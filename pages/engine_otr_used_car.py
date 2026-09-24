@@ -24,6 +24,16 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+hide_streamlit_style = """
+    <style>
+        #header {visibility: hidden;}
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+        .st-emotion-cache-1wbqy5l.e19wr9s00 {display: none !important;}
+    </style>
+"""
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_FILE = BASE_DIR / "Master_Live.csv"
 LELANG_DATA_FILE = BASE_DIR / "Lelang_Live.csv"
@@ -37,7 +47,7 @@ st.markdown("""
 .block-container {padding-top: 1.6rem; padding-bottom: 3rem;}
 [data-testid="stSidebar"] {border-right: 1px solid rgba(128, 128, 128, .28);}
 .page-title {font-size: 2rem; font-weight: 700; margin-bottom: .15rem;}
-.page-subtitle {color: var(--text-color); opacity: .72; margin-bottom: 1.4rem;}
+.page-subtitle {color: var(--text-color); font-size: 1.00rem; font-weight: 500; opacity: .72; margin-bottom: 0.4rem;}
 div[data-testid="stMetric"] {
     border: 1px solid rgba(128, 128, 128, .28);
     border-radius: 12px;
@@ -380,7 +390,16 @@ except Exception as exc:
     st.error(str(exc)); st.stop()
 
 st.markdown('<div class="page-title">Engine OTR Used Car</div>', unsafe_allow_html=True)
-st.markdown('<div class="page-subtitle">Analisis benchmark harga kendaraan berdasarkan data Financore, OLX, dan Lelang.</div>', unsafe_allow_html=True)
+#st.markdown('<div class="page-subtitle">Analisis benchmark harga kendaraan berdasarkan data Financore, OLX, dan Lelang.</div>', unsafe_allow_html=True)
+
+st.markdown('<div class="page-subtitle">Disclaimer:</div>', unsafe_allow_html=True)
+
+st.markdown("""
+Tool ini hanya sebagai pendukung analisis dan pembanding harga, 
+bukan acuan utama dalam pengambilan keputusan. 
+Range harga mobil di atas berlaku untuk kendaraan dalam kondisi NORMAL, 
+yaitu tidak penyok, bebas banjir, dan memiliki jarak tempuh maksimal 100.000 km.
+""")
 
 search_df = df.copy()
 
@@ -745,31 +764,62 @@ information_display = information_display.rename(
 # )
 st.markdown("#### LEGENDS")
 st.markdown("""
-            HargaBaruATT: Harga Baru at that time\n
-            HargaBaruCurrent: Harga Baru saat ini
+            HargaBaruATT: Harga Baru at that time (cth: Harga Baru Avanza 1.3 E 2023 pada tahun 2023)\n
+            HargaBaruCurrent: Harga Baru saat ini (cth: Harga Baru Avanza 1.3 E pada tahun 2026 - jika belum discontinue)
 """)
 
+hide_streamlit_style = """
+    <style>
+        #header {visibility: hidden;}
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+        .st-emotion-cache-1wbqy5l.e19wr9s00 {display: none !important;}
+    </style>
+"""
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
-st.markdown("### OTR DATA")
-st.dataframe(
-    information_display,
-    width="stretch",
-    hide_index=True,
-    height=500,
-)
+
+st.markdown("### DETAIL DATA OTR USED-CAR")
+rows_otr = len(information_display)
+if rows_otr == 0:
+    st.info("Tidak ada data OTR yang sesuai dengan parameter yang dipilih.")
+else:
+    # estimate row height and header; if more than 10 rows, show 10 rows and allow scrolling
+    row_height = 36
+    header_height = 48
+    if rows_otr > 10:
+        display_rows = 10
+    else:
+        display_rows = max(rows_otr, 1)
+    height = header_height + display_rows * row_height
+    st.dataframe(
+        information_display,
+        width="stretch",
+        hide_index=True,
+        height=height,
+    )
 
 
-st.markdown("### DATA LELANG")
+st.markdown("### DETAIL DATA LELANG (2 TAHUN TERAKHIR)")
 if filtered_lelang.empty:
     st.info("Tidak ada data lelang yang sesuai dengan parameter yang dipilih.")
 else:
     lelang_display = build_lelang_display(filtered_lelang)
-    st.caption(
-        f"{len(lelang_display):,} transaksi lelang ditemukan.".replace(",", ".")
-    )
-    st.dataframe(
-        lelang_display,
-        width="stretch",
-        hide_index=True,
-        height=500,
-    )
+    rows_lelang = len(lelang_display)
+    if rows_lelang == 0:
+        st.info("Tidak ada data lelang yang sesuai dengan parameter yang dipilih.")
+    else:
+        # estimate row height and header; if more than 10 rows, show 10 rows and allow scrolling
+        row_height = 36
+        header_height = 48
+        if rows_lelang > 10:
+            display_rows = 10
+        else:
+            display_rows = max(rows_lelang, 1)
+        height = header_height + display_rows * row_height
+        st.dataframe(
+            lelang_display,
+            width="stretch",
+            hide_index=True,
+            height=height,
+        )

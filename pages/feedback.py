@@ -20,6 +20,16 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+hide_streamlit_style = """
+    <style>
+        #header {visibility: hidden;}
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+        .st-emotion-cache-1wbqy5l.e19wr9s00 {display: none !important;}
+    </style>
+"""
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_FILE = BASE_DIR / "Master_Live.csv"
 FEEDBACK_FILE = BASE_DIR / "feedback.csv"
@@ -29,7 +39,18 @@ st.markdown("""
 .block-container {padding-top: 1.6rem; padding-bottom: 3rem;}
 [data-testid="stSidebar"] {border-right: 1px solid rgba(128, 128, 128, .28);}
 .page-title {font-size: 2rem; font-weight: 700; margin-bottom: .15rem;}
-.page-subtitle {color: var(--text-color); opacity: .72; margin-bottom: 1.4rem;}
+.page-subtitle {color: var(--text-color); font-size: 1.00rem; font-weight: 500; opacity: .72; margin-bottom: 0.4rem;}
+div[data-testid="stMetric"] {
+    border: 1px solid rgba(128, 128, 128, .28);
+    border-radius: 12px;
+    padding: .75rem .9rem;
+    background: var(--secondary-background-color);
+    color: var(--text-color);
+}
+div[data-testid="stMetric"] [data-testid="stMetricLabel"],
+div[data-testid="stMetric"] [data-testid="stMetricValue"] {
+    color: var(--text-color);
+}
 </style>
 """, unsafe_allow_html=True)
 
